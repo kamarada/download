@@ -26,7 +26,7 @@ jobs:
       matrix:
         EDITION: [gnome-next]
         BRANCH: [unstable]
-        SCOPE: [full, minimal]
+        SCOPE: [minimal]
     steps:
       - 
         uses: styfle/cancel-workflow-action@0.9.0
@@ -39,7 +39,7 @@ jobs:
           format: 'YY.MM'   
       -
         name: image-build-upload
-        uses: manjaro/manjaro-iso-action@main
+        uses: kamarada/manjaro-iso-action@main
         with:
           edition: ${{ matrix.edition }}
           branch: ${{ matrix.branch }}
