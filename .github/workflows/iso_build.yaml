@@ -37,6 +37,14 @@ jobs:
         uses: nanzm/get-time-action@v1.1
         with:
           format: 'YY.MM'   
+      - run: df -h
+      - name: node-cleanup
+        run: |
+          # https://carlosbecker.com/posts/github-actions-disk-space/
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          sudo docker builder prune -a
+      - run: df -h
       -
         name: image-build-upload
         uses: kamarada/manjaro-iso-action@main
@@ -48,6 +56,7 @@ jobs:
           kernel: linux616
           code-name: "Nightly-Build"
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+      - run: df -h
       -
         name: rollback
         if: ${{ failure() || cancelled() }}
