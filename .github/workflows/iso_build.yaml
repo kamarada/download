@@ -9,32 +9,32 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - 
-        uses: styfle/cancel-workflow-action@0.9.0
+        uses: styfle/cancel-workflow-action@0.13.1
         with:
           access_token: ${{ github.token }}
-      - 
-        id: time
-        uses: nanzm/get-time-action@v1.1
+      - id: time
+        uses: nanzm/get-time-action@v2.0
         with:
           format: 'YYYYMMDDHHmm'
     outputs:
       release_tag: ${{ steps.time.outputs.time }}
   build-release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [prepare-release]
     strategy:
       matrix:
         EDITION: [kamarada.gnome]
+        KERNEL: [linux618]
         BRANCH: [stable]
         SCOPE: [full]
     steps:
       - 
-        uses: styfle/cancel-workflow-action@0.9.0
+        uses: styfle/cancel-workflow-action@0.13.1
         with:
           access_token: ${{ github.token }}
       - 
         id: time
-        uses: nanzm/get-time-action@v1.1
+        uses: nanzm/get-time-action@v2.0
         with:
           format: 'YY.MM'   
       - name: Show disk usage
@@ -59,8 +59,9 @@ jobs:
           branch: ${{ matrix.branch }}
           scope: ${{ matrix.scope }}
           version: ${{ steps.time.outputs.time }}-development
-          kernel: linux616
+          kernel: ${{ matrix.kernel }}
           code-name: "Nightly-Build"
+          build-mirror: "https://mirrors.manjaro.org/repo"
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       - name: Show disk usage
         run: df -h
